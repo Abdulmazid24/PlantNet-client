@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import { TbFidgetSpinner } from 'react-icons/tb';
 
-const AddPlantForm = ({ handleSubmit, uploadButtonText, setUploadButtonText, loading }) => {
+const AddPlantForm = ({ handleSubmit, uploadImage, setUploadImage, loading }) => {
   return (
     <div className='w-full min-h-[calc(100vh-40px)] flex flex-col justify-center items-center text-gray-800 rounded-xl bg-gray-50'>
       <form onSubmit={handleSubmit}>
@@ -92,7 +92,12 @@ const AddPlantForm = ({ handleSubmit, uploadButtonText, setUploadButtonText, loa
                 <div className='flex flex-col w-max mx-auto text-center'>
                   <label>
                     <input
-                      onChange={(e) => setUploadButtonText(e.target.files[0])}
+                      onChange={(e) =>
+                        setUploadImage({
+                          image: e.target.files[0],
+                          url: URL.createObjectURL(e.target.files[0]),
+                        })
+                      }
                       className='text-sm cursor-pointer w-36 hidden'
                       type='file'
                       name='image'
@@ -101,7 +106,7 @@ const AddPlantForm = ({ handleSubmit, uploadButtonText, setUploadButtonText, loa
                       hidden
                     />
                     <div className='bg-lime-500 text-white border border-gray-300 rounded font-semibold cursor-pointer p-1 px-3 hover:bg-lime-500'>
-                      {uploadButtonText.name}
+                      {uploadImage?.image?.name || 'Upload Image'}
                     </div>
                   </label>
                 </div>
@@ -109,7 +114,13 @@ const AddPlantForm = ({ handleSubmit, uploadButtonText, setUploadButtonText, loa
             </div>
 
             {/* Image Preview */}
-            {uploadButtonText.size && <p>Image size : {uploadButtonText.size} Bytes</p>}
+            {uploadImage && uploadImage?.image?.size && (
+              <div className='flex items-center gap-10'>
+                <img src={uploadImage?.url} alt='' className='w-20' />
+                <p>Image size: {uploadImage?.image?.size}</p>
+              </div>
+            )}
+
             {/* Submit Button */}
             <button
               type='submit'
@@ -126,6 +137,9 @@ const AddPlantForm = ({ handleSubmit, uploadButtonText, setUploadButtonText, loa
 
 AddPlantForm.propTypes = {
   handleSubmit: PropTypes.func.isRequired,
+  uploadImage: PropTypes.object, // Add validation for uploadImage
+  setUploadImage: PropTypes.func.isRequired, // Add validation for setUploadImage
+  loading: PropTypes.bool.isRequired, // Add validation for loading
 };
 
 export default AddPlantForm;
